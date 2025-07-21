@@ -1,6 +1,7 @@
 'use client';
 
 import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 import GameCard from '../../components/GameCard';
 import { useState } from 'react';
 
@@ -286,6 +287,7 @@ export default function GamesPage() {
           </div>
         </div>
       </div>
+    <Footer/>
     </div>
   );
 }

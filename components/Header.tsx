@@ -12,7 +12,7 @@ export default function Header() {
       <div className="px-4 py-4">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
-            <div className="text-2xl font-pacifico text-purple-600">RoboxCodes</div>
+            <div className="text-2xl font-pacifico text-purple-600">Roblox Codes Directory</div>
           </Link>
           
           <nav className="hidden md:flex items-center space-x-8">

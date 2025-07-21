@@ -2,6 +2,7 @@
 'use client';
 
 import Header from '../../../components/Header';
+import Footer from '../../../components/Footer';
 import CodeCard from '../../../components/CodeCard';
 import Link from 'next/link';
 
@@ -81,7 +82,7 @@ export default function GameDetail({ gameId }: GameDetailProps) {
       {/* Game Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 py-8">
-          <div className="flex items-start space-x-6">
+          {/* <div className="flex items-start space-x-6">
             <div className="w-32 h-32 rounded-xl overflow-hidden flex-shrink-0">
               <img
                 src={game.image}
@@ -116,11 +117,47 @@ export default function GameDetail({ gameId }: GameDetailProps) {
                 </div>
               </div>
             </div>
+          </div> */}
+          {/* <div className="flex flex-col md:flex-row md:space-x-6 mb-6"> */}
+            {/* Image Section */}
+            {/* <div className="mb-4 md:mb-0 md:w-1/3">
+              <img
+                src={game.image}
+                alt={game.name}
+                className="w-full rounded-lg object-cover"
+              />
+            </div> */}
+          <div className="flex flex-col md:flex-row items-center md:items-start md:space-x-6 mb-6">
+            <div className="w-32 h-32 rounded-xl overflow-hidden flex-shrink-0">
+              <img
+                src={game.image}
+                alt={game.name}
+                className="w-full h-full object-cover object-top"
+              />
+            </div>
+
+            {/* Text Content Section */}
+            <div className="flex-1">
+              <div className="flex flex-col items-center sm:flex-row sm:items-center sm:space-x-4 mt-4 mb-4">
+                <h1 className="text-3xl font-bold text-gray-900">{game.name} Codes</h1>
+                <div className="flex items-center space-x-2 mt-2 sm:mt-0">
+                  <div className="flex items-center space-x-1">
+                    <i className="ri-star-fill text-yellow-400 w-4 h-4 flex items-center justify-center"></i>
+                    <span className="font-medium">{game.rating}</span>
+                  </div>
+                  <span className="text-gray-400">•</span>
+                  <span className="text-gray-600">{game.totalPlayers} Players</span>
+                </div>
+              </div>
+
+              <p className="text-gray-600 leading-relaxed">{game.description}</p>
+            </div>
           </div>
+
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-4">
         {/* Active Codes */}
         <section className="mb-12">
           <div className="flex items-center justify-between mb-6">
@@ -131,7 +168,7 @@ export default function GameDetail({ gameId }: GameDetailProps) {
           </div>
           
           {activeCodes.length > 0 ? (
-            <div className="grid gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {activeCodes.map((code, index) => (
                 <CodeCard key={index} {...code} />
               ))}
@@ -147,7 +184,7 @@ export default function GameDetail({ gameId }: GameDetailProps) {
 
         {/* How to Redeem */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">How to Redeem Codes</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">How to Redeem {game.name} Codes</h2>
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <div className="grid md:grid-cols-2 gap-8">
               <div>
@@ -171,6 +208,15 @@ export default function GameDetail({ gameId }: GameDetailProps) {
                   </li>
                 </ol>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* How to find more codes */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">How to Find More {game.name} Codes</h2>
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <div className="grid md:grid-cols-2 gap-8">
               
               <div>
                 <h3 className="font-semibold text-gray-900 mb-4">Tips:</h3>
@@ -201,7 +247,7 @@ export default function GameDetail({ gameId }: GameDetailProps) {
         {expiredCodes.length > 0 && (
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Expired Codes</h2>
-            <div className="grid gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {expiredCodes.map((code, index) => (
                 <CodeCard key={index} {...code} />
               ))}
@@ -209,6 +255,7 @@ export default function GameDetail({ gameId }: GameDetailProps) {
           </section>
         )}
       </div>
+      <Footer/>
     </div>
   );
 }

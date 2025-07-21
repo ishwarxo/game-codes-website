@@ -1,6 +1,8 @@
 
 'use client';
 
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -194,6 +196,7 @@ export default function LatestPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
+    <Header />
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="text-center mb-12">
@@ -305,7 +308,7 @@ export default function LatestPage() {
                             href={`/game/${codeItem.gameId}`}
                             className="text-sm font-medium text-purple-600 hover:text-purple-700 cursor-pointer"
                           >
-                            {codeItem.gameName}
+                            {codeItem.gameName} Codes
                           </Link>
                           <p className="text-xs text-gray-500">{codeItem.addedDate}</p>
                         </div>
@@ -444,6 +447,7 @@ export default function LatestPage() {
           </div>
         </div>
       </div>
+    <Footer/>
     </div>
   );
 }
