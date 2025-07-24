@@ -1,16 +1,27 @@
-
 'use client';
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/games?search=${encodeURIComponent(searchQuery.trim())}`);
+      setIsMobileMenuOpen(false); // Close mobile menu on search
+    }
+  };
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-100">
       <div className="px-4 py-4">
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between"> */}
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
             <div className="text-2xl font-pacifico text-purple-600">Roblox Codes Directory</div>
           </Link>
@@ -31,14 +42,18 @@ export default function Header() {
           </nav>
           
           <div className="flex items-center space-x-4">
-            <div className="relative hidden sm:block">
+            <form onSubmit={handleSearch} className="relative hidden sm:block">
               <input
                 type="text"
                 placeholder="Search games..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
               />
-              <i className="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 flex items-center justify-center"></i>
-            </div>
+              <button type="submit" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <i className="ri-search-line w-4 h-4 flex items-center justify-center"></i>
+              </button>
+            </form>
             
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -82,14 +97,18 @@ export default function Header() {
                 Popular
               </Link>
               
-              <div className="relative sm:hidden pt-2">
+              <form onSubmit={handleSearch} className="relative sm:hidden pt-2">
                 <input
                   type="text"
                   placeholder="Search games..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
                 />
-                <i className="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 flex items-center justify-center"></i>
-              </div>
+                <button type="submit" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                  <i className="ri-search-line w-4 h-4 flex items-center justify-center"></i>
+                </button>
+              </form>
             </nav>
           </div>
         )}

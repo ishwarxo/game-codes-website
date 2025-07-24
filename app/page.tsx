@@ -1,74 +1,57 @@
-
 'use client';
 
 import Header from '../components/Header';
 import GameCard from '../components/GameCard';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
-const featuredGames = [
-  {
-    id: 'adopt-me',
-    name: 'Adopt Me!',
-    image: 'https://readdy.ai/api/search-image?query=Adopt%20Me%20Roblox%20game%20cute%20pets%20adoption%20house%20colorful%20bright%20fantasy%20world%20with%20adorable%20animals%20and%20cozy%20home%20background%20vibrant%20colors%20family-friendly%20atmosphere&width=400&height=225&seq=adoptme1&orientation=landscape',
-    totalCodes: 25,
-    activeCodes: 8,
-    lastUpdated: '2 hours ago'
-  },
-  {
-    id: 'blox-fruits',
-    name: 'Blox Fruits',
-    image: 'https://readdy.ai/api/search-image?query=Blox%20Fruits%20Roblox%20game%20pirate%20adventure%20ocean%20islands%20treasure%20chest%20devil%20fruits%20anime%20style%20colorful%20tropical%20paradise%20with%20ships%20and%20magical%20powers&width=400&height=225&seq=bloxfruits1&orientation=landscape',
-    totalCodes: 32,
-    activeCodes: 12,
-    lastUpdated: '1 hour ago'
-  },
-  {
-    id: 'brookhaven',
-    name: 'Brookhaven RP',
-    image: 'https://readdy.ai/api/search-image?query=Brookhaven%20RP%20Roblox%20game%20suburban%20neighborhood%20houses%20cars%20roleplay%20city%20modern%20town%20with%20beautiful%20homes%20and%20streets%20peaceful%20community%20setting&width=400&height=225&seq=brookhaven1&orientation=landscape',
-    totalCodes: 18,
-    activeCodes: 6,
-    lastUpdated: '3 hours ago'
-  },
-  {
-    id: 'tower-defense',
-    name: 'Tower Defense Simulator',
-    image: 'https://readdy.ai/api/search-image?query=Tower%20Defense%20Simulator%20Roblox%20game%20military%20strategy%20towers%20weapons%20battlefield%20action-packed%20war%20zone%20with%20defensive%20structures%20and%20combat%20scenarios&width=400&height=225&seq=towerdefense1&orientation=landscape',
-    totalCodes: 22,
-    activeCodes: 9,
-    lastUpdated: '4 hours ago'
-  },
-  {
-    id: 'jailbreak',
-    name: 'Jailbreak',
-    image: 'https://readdy.ai/api/search-image?query=Jailbreak%20Roblox%20game%20police%20prison%20escape%20cars%20heist%20action%20city%20urban%20environment%20with%20vehicles%20and%20law%20enforcement%20chase%20scenes&width=400&height=225&seq=jailbreak1&orientation=landscape',
-    totalCodes: 28,
-    activeCodes: 11,
-    lastUpdated: '5 hours ago'
-  },
-  {
-    id: 'mining-simulator',
-    name: 'Mining Simulator',
-    image: 'https://readdy.ai/api/search-image?query=Mining%20Simulator%20Roblox%20game%20underground%20caves%20gems%20crystals%20pickaxe%20mining%20equipment%20treasure%20hunting%20dark%20caves%20with%20sparkling%20precious%20stones&width=400&height=225&seq=mining1&orientation=landscape',
-    totalCodes: 19,
-    activeCodes: 7,
-    lastUpdated: '6 hours ago'
-  }
-];
+interface Game {
+  gameId: string;
+  name: string;
+  image: string;
+  totalCodes: number;
+  activeCodes: number;
+  lastUpdated: string;
+}
 
-const recentCodes = [
-  { game: 'Adopt Me!', code: 'SUMMERFUN2024', reward: '500 Bucks + Rare Pet', status: 'active' as const },
-  { game: 'Blox Fruits', code: 'PIRATEKING', reward: '2x EXP Boost (15 mins)', status: 'active' as const },
-  { game: 'Brookhaven RP', code: 'NEWHOUSE', reward: 'Free House Upgrade', status: 'active' as const },
-  { game: 'Tower Defense', code: 'DEFEND2024', reward: '1000 Coins + Exclusive Tower', status: 'active' as const }
-];
+interface Code {
+  game: string;
+  code: string;
+  reward: string;
+  status: 'active' | 'expired';
+}
 
 export default function Home() {
+  const [featuredGames, setFeaturedGames] = useState<Game[]>([]);
+  const [recentCodes, setRecentCodes] = useState<Code[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      const [gamesRes, codesRes] = await Promise.all([
+        fetch('/api/featured-games'),
+        fetch('/api/recent-codes')
+      ]);
+      const gamesData = await gamesRes.json();
+      const codesData = await codesRes.json();
+
+      setFeaturedGames(gamesData.map((game: any) => ({
+        ...game,
+        id: game.gameId,
+        lastUpdated: formatDate(new Date(game.lastUpdated))
+      })));
+      setRecentCodes(codesData);
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      {/* Hero Section */}
       <section 
         className="relative bg-gradient-to-br from-purple-600 to-blue-600 text-white py-20"
         style={{
@@ -97,7 +80,6 @@ export default function Home() {
       </section>
 
       <div className="max-w-6xl mx-auto px-4 py-12">
-        {/* Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
           <div className="bg-white rounded-xl p-6 text-center shadow-sm border border-gray-100">
             <div className="text-3xl font-bold text-purple-600 mb-2">150+</div>
@@ -117,7 +99,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Featured Games Section */}
         <section className="mb-12">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-bold text-gray-900">Popular Games</h2>
@@ -133,7 +114,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Recent Codes Section */}
         <section className="mb-12">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-bold text-gray-900">Latest Codes</h2>
@@ -167,7 +147,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* How It Works Section */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">How It Works</h2>
           
@@ -199,7 +178,6 @@ export default function Home() {
         </section>
       </div>
 
-      {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -223,4 +201,15 @@ export default function Home() {
       </footer>  
     </div>
   );
+}
+
+function formatDate(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  if (diffHours < 24) return `${diffHours} hours ago`;
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 30) return `${diffDays} days ago`;
+  const diffMonths = Math.floor(diffDays / 30);
+  return `${diffMonths} months ago`;
 }

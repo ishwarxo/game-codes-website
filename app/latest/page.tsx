@@ -1,10 +1,9 @@
-
 'use client';
 
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Code {
   id: string;
@@ -29,160 +28,31 @@ interface Game {
 export default function LatestPage() {
   const [activeTab, setActiveTab] = useState<'codes' | 'games'>('codes');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [latestCodes, setLatestCodes] = useState<Code[]>([]);
+  const [latestGames, setLatestGames] = useState<Game[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const latestCodes: Code[] = [
-    {
-      id: '1',
-      code: 'WINTER2024',
-      reward: '500 Coins + Winter Pet',
-      status: 'active',
-      addedDate: '2 hours ago',
-      gameId: 'adopt-me',
-      gameName: 'Adopt Me!',
-      gameImage: 'https://readdy.ai/api/search-image?query=cute%20colorful%20pet%20adoption%20game%20with%20rainbow%20background%2C%20cartoon%20style%20pets%20playing%20together%20in%20magical%20world&width=400&height=300&seq=adopt-me-latest&orientation=landscape'
-    },
-    {
-      id: '2',
-      code: 'BLOXFRUIT2024',
-      reward: '2x EXP Boost (20 minutes)',
-      status: 'active',
-      addedDate: '4 hours ago',
-      gameId: 'blox-fruits',
-      gameName: 'Blox Fruits',
-      gameImage: 'https://readdy.ai/api/search-image?query=pirate%20adventure%20game%20with%20magical%20fruits%20and%20ocean%20battles%2C%20anime%20style%20characters%20with%20swords%20and%20powers&width=400&height=300&seq=blox-fruits-latest&orientation=landscape'
-    },
-    {
-      id: '3',
-      code: 'ARSENAL2024',
-      reward: 'Exclusive Skin + 1000 Credits',
-      status: 'active',
-      addedDate: '6 hours ago',
-      gameId: 'arsenal',
-      gameName: 'Arsenal',
-      gameImage: 'https://readdy.ai/api/search-image?query=modern%20tactical%20shooter%20game%20with%20colorful%20weapons%20and%20combat%20arena%2C%20competitive%20gaming%20atmosphere&width=400&height=300&seq=arsenal-latest&orientation=landscape'
-    },
-    {
-      id: '4',
-      code: 'BEESWARM2024',
-      reward: 'Royal Jelly + Honey Boost',
-      status: 'active',
-      addedDate: '8 hours ago',
-      gameId: 'bee-swarm',
-      gameName: 'Bee Swarm Simulator',
-      gameImage: 'https://readdy.ai/api/search-image?query=colorful%20bee%20farm%20simulation%20with%20flowers%20and%20hives%2C%20cute%20cartoon%20bees%20collecting%20honey%20in%20bright%20garden&width=400&height=300&seq=bee-swarm-latest&orientation=landscape'
-    },
-    {
-      id: '5',
-      code: 'JAILBREAK2024',
-      reward: '10,000 Cash + VIP Access',
-      status: 'active',
-      addedDate: '12 hours ago',
-      gameId: 'jailbreak',
-      gameName: 'Jailbreak',
-      gameImage: 'https://readdy.ai/api/search-image?query=urban%20crime%20simulation%20game%20with%20police%20cars%20and%20city%20streets%2C%20modern%20cityscape%20with%20action%20scenes&width=400&height=300&seq=jailbreak-latest&orientation=landscape'
-    },
-    {
-      id: '6',
-      code: 'PETX2024',
-      reward: 'Rainbow Pet + Diamonds',
-      status: 'active',
-      addedDate: '16 hours ago',
-      gameId: 'pet-simulator-x',
-      gameName: 'Pet Simulator X',
-      gameImage: 'https://readdy.ai/api/search-image?query=fantasy%20pet%20collection%20game%20with%20magical%20creatures%20and%20rainbow%20effects%2C%20cute%20animated%20pets%20in%20colorful%20world&width=400&height=300&seq=pet-sim-x-latest&orientation=landscape'
-    },
-    {
-      id: '7',
-      code: 'TOWERS2024',
-      reward: 'Legendary Tower + Coins',
-      status: 'active',
-      addedDate: '20 hours ago',
-      gameId: 'tower-defense',
-      gameName: 'Tower Defense Simulator',
-      gameImage: 'https://readdy.ai/api/search-image?query=strategic%20tower%20defense%20game%20with%20defensive%20structures%20and%20enemies%2C%20battlefield%20with%20towers%20and%20combat&width=400&height=300&seq=tower-defense-latest&orientation=landscape'
-    },
-    {
-      id: '8',
-      code: 'MINING2024',
-      reward: 'Diamond Pickaxe + Ore Boost',
-      status: 'active',
-      addedDate: '1 day ago',
-      gameId: 'mining-simulator',
-      gameName: 'Mining Simulator',
-      gameImage: 'https://readdy.ai/api/search-image?query=underground%20mining%20game%20with%20gems%20and%20pickaxes%2C%20cave%20environment%20with%20precious%20stones%20and%20mining%20equipment&width=400&height=300&seq=mining-sim-latest&orientation=landscape'
-    },
-    {
-      id: '9',
-      code: 'BROOKHAVEN2024',
-      reward: 'Premium House + Furniture',
-      status: 'expired',
-      addedDate: '1 day ago',
-      gameId: 'brookhaven',
-      gameName: 'Brookhaven RP',
-      gameImage: 'https://readdy.ai/api/search-image?query=suburban%20neighborhood%20roleplay%20game%20with%20houses%20and%20families%2C%20peaceful%20town%20setting%20with%20residential%20areas&width=400&height=300&seq=brookhaven-latest&orientation=landscape'
-    },
-    {
-      id: '10',
-      code: 'MURDER2024',
-      reward: 'Exclusive Knife Skin + Coins',
-      status: 'active',
-      addedDate: '1 day ago',
-      gameId: 'murder-mystery',
-      gameName: 'Murder Mystery 2',
-      gameImage: 'https://readdy.ai/api/search-image?query=mystery%20detective%20game%20with%20dark%20atmosphere%20and%20investigation%20theme%2C%20suspenseful%20environment%20with%20shadows&width=400&height=300&seq=murder-mystery-latest&orientation=landscape'
-    }
-  ];
+  useEffect(() => {
+    async function fetchData() {
+      const [codesRes, gamesRes] = await Promise.all([
+        fetch('/api/latest-codes'),
+        fetch('/api/latest-games')
+      ]);
+      const codesData = await codesRes.json();
+      const gamesData = await gamesRes.json();
 
-  const latestGames: Game[] = [
-    {
-      id: 'adopt-me',
-      name: 'Adopt Me!',
-      image: 'https://readdy.ai/api/search-image?query=cute%20colorful%20pet%20adoption%20game%20with%20rainbow%20background%2C%20cartoon%20style%20pets%20playing%20together%20in%20magical%20world&width=300&height=200&seq=adopt-me-game&orientation=landscape',
-      lastUpdated: '2 hours ago',
-      newCodesCount: 3,
-      totalActiveCodes: 8
-    },
-    {
-      id: 'blox-fruits',
-      name: 'Blox Fruits',
-      image: 'https://readdy.ai/api/search-image?query=pirate%20adventure%20game%20with%20magical%20fruits%20and%20ocean%20battles%2C%20anime%20style%20characters%20with%20swords%20and%20powers&width=300&height=200&seq=blox-fruits-game&orientation=landscape',
-      lastUpdated: '4 hours ago',
-      newCodesCount: 2,
-      totalActiveCodes: 12
-    },
-    {
-      id: 'arsenal',
-      name: 'Arsenal',
-      image: 'https://readdy.ai/api/search-image?query=modern%20tactical%20shooter%20game%20with%20colorful%20weapons%20and%20combat%20arena%2C%20competitive%20gaming%20atmosphere&width=300&height=200&seq=arsenal-game&orientation=landscape',
-      lastUpdated: '6 hours ago',
-      newCodesCount: 1,
-      totalActiveCodes: 5
-    },
-    {
-      id: 'bee-swarm',
-      name: 'Bee Swarm Simulator',
-      image: 'https://readdy.ai/api/search-image?query=colorful%20bee%20farm%20simulation%20with%20flowers%20and%20hives%2C%20cute%20cartoon%20bees%20collecting%20honey%20in%20bright%20garden&width=300&height=200&seq=bee-swarm-game&orientation=landscape',
-      lastUpdated: '8 hours ago',
-      newCodesCount: 2,
-      totalActiveCodes: 7
-    },
-    {
-      id: 'jailbreak',
-      name: 'Jailbreak',
-      image: 'https://readdy.ai/api/search-image?query=urban%20crime%20simulation%20game%20with%20police%20cars%20and%20city%20streets%2C%20modern%20cityscape%20with%20action%20scenes&width=300&height=200&seq=jailbreak-game&orientation=landscape',
-      lastUpdated: '12 hours ago',
-      newCodesCount: 1,
-      totalActiveCodes: 6
-    },
-    {
-      id: 'pet-simulator-x',
-      name: 'Pet Simulator X',
-      image: 'https://readdy.ai/api/search-image?query=fantasy%20pet%20collection%20game%20with%20magical%20creatures%20and%20rainbow%20effects%2C%20cute%20animated%20pets%20in%20colorful%20world&width=300&height=200&seq=pet-sim-x-game&orientation=landscape',
-      lastUpdated: '16 hours ago',
-      newCodesCount: 1,
-      totalActiveCodes: 9
+      setLatestCodes(codesData.map((code: any) => ({
+        ...code,
+        addedDate: formatDate(new Date(code.addedDate))
+      })));
+      setLatestGames(gamesData.map((game: any) => ({
+        ...game,
+        lastUpdated: formatDate(new Date(game.lastUpdated))
+      })));
+      setLoading(false);
     }
-  ];
+    fetchData();
+  }, []);
 
   const handleCopyCode = async (code: string) => {
     try {
@@ -194,11 +64,12 @@ export default function LatestPage() {
     }
   };
 
+  if (loading) return <div>Loading...</div>;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
-    <Header />
+      <Header />
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Page Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Latest Updates</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -206,7 +77,6 @@ export default function LatestPage() {
           </p>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl p-6 shadow-lg">
             <div className="flex items-center">
@@ -254,7 +124,6 @@ export default function LatestPage() {
           </div>
         </div>
 
-        {/* Tab Navigation */}
         <div className="mb-8">
           <div className="flex justify-center">
             <div className="bg-white rounded-full p-1 shadow-lg">
@@ -282,7 +151,6 @@ export default function LatestPage() {
           </div>
         </div>
 
-        {/* Latest Codes Tab */}
         {activeTab === 'codes' && (
           <div>
             <div className="mb-6">
@@ -355,7 +223,6 @@ export default function LatestPage() {
           </div>
         )}
 
-        {/* Updated Games Tab */}
         {activeTab === 'games' && (
           <div>
             <div className="mb-6">
@@ -415,7 +282,6 @@ export default function LatestPage() {
           </div>
         )}
 
-        {/* Update Schedule */}
         <div className="mt-16 bg-white rounded-xl p-8 shadow-lg">
           <div className="text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Update Schedule</h2>
@@ -447,7 +313,18 @@ export default function LatestPage() {
           </div>
         </div>
       </div>
-    <Footer/>
+      <Footer/>
     </div>
   );
+}
+
+function formatDate(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  if (diffHours < 24) return `${diffHours} hours ago`;
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 30) return `${diffDays} days ago`;
+  const diffMonths = Math.floor(diffDays / 30);
+  return `${diffMonths} months ago`;
 }
